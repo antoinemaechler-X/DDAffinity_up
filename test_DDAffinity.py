@@ -45,7 +45,7 @@ if __name__ == '__main__':
     config, _ = load_config(args.config)
 
     # Model
-    ckpt = torch.load(config.checkpoint, map_location=args.device)
+    ckpt = torch.load(config.checkpoint, map_location=args.device, weights_only=False)
     config_model = ckpt['config']
     num_cvfolds = len(ckpt['model']['models'])
     cv_mgr = CrossValidation(
@@ -55,7 +55,10 @@ if __name__ == '__main__':
         num_cvfolds=num_cvfolds
     ).to(args.device)
     cv_mgr.load_state_dict(ckpt['model'], )
+        
     print(config_model)
+
+    config_model['data'] = config['data']
 
     # Data
     dataset_mgr = SkempiDatasetManager(
@@ -95,7 +98,6 @@ if __name__ == '__main__':
     results.replace("1.00E+96", "1E96", inplace = True)
     results.replace("1.00E+50", "1E50", inplace = True)
 
-    # 显示所有列,保留3位小数
     pd.set_option('display.max_columns', None)
     pd.options.display.float_format = '{:.3f}'.format
 

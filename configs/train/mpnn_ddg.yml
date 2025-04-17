@@ -1,4 +1,6 @@
-checkpoint: ./trained_models/DDAffinity.pt
+#checkpoint: ./trained_models/DDAffinity.pt
+checkpoint: ./trained_models/M1340.pt
+
 early_stoppingdir: ./early_stopping
 model:
   encoder:
@@ -18,22 +20,22 @@ model:
   patch_size: 256
 
 data:
-  csv_path: ./data/SKEMPI2/SKEMPI2.csv
-  pdb_wt_dir: ./data/SKEMPI2/SKEMPI2_cache/wildtype
-  pdb_mt_dir: ./data/SKEMPI2/SKEMPI2_cache/optimized
-  cache_dir: ./data/SKEMPI2/SKEMPI2_cache/entries_cache
-#  csv_path: ./data/SKEMPI2/M1340.csv
-#  pdb_wt_dir: ./data/SKEMPI2/M1340_cache/wildtype
-#  pdb_mt_dir: ./data/SKEMPI2/MS1340_cache/optimized
-#  cache_dir: ./data/SKEMPI2/M1340_cache/entries_cache
+  # csv_path: ./data/SKEMPI2/SKEMPI2.csv
+  # pdb_wt_dir: ./data/SKEMPI2/SKEMPI2_cache/wildtype
+  # pdb_mt_dir: ./data/SKEMPI2/SKEMPI2_cache/optimized
+  # cache_dir: ./data/SKEMPI2/SKEMPI2_cache/entries_cache
+  csv_path: ./data/SKEMPI2/M1340.csv
+  pdb_wt_dir: ./data/SKEMPI2/M1340_cache/wildtype
+  pdb_mt_dir: ./data/SKEMPI2/MS1340_cache/optimized
+  cache_dir: ./data/SKEMPI2/M1340_cache/entries_cache
 #  csv_path: ./data/SKEMPI2/S1131.csv
 #  pdb_wt_dir: ./data/SKEMPI2/S1131_cache/wildtype
 #  pdb_mt_dir: ./data/SKEMPI2/S1131_cache/optimized
 #  cache_dir: ./data/SKEMPI2/S1131_cache/entries_cache
-#  csv_path: ./data/SKEMPI2/M1707.csv
-#  pdb_wt_dir: ./data/SKEMPI2/M1707_cache/wildtype
-#  pdb_mt_dir: ./data/SKEMPI2/M1707_cache/optimized
-#  cache_dir: ./data/SKEMPI2/M1707_cache/entries_cache
+  # csv_path: ./data/SKEMPI2/M1707.csv
+  # pdb_wt_dir: ./data/SKEMPI2/M1707_cache/wildtype
+  # pdb_mt_dir: ./data/SKEMPI2/M1707_cache/optimized
+  # cache_dir: ./data/SKEMPI2/M1707_cache/entries_cache
 #  csv_path: ./data/SKEMPI2/S285.csv
 #  pdb_wt_dir: ./data/SKEMPI2/S285_cache/wildtype
 #  pdb_mt_dir: ./data/SKEMPI2/S285_cache/optimized

@@ -128,3 +128,17 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# data loaded
+
+/DDAffinity.pt
+/M1340.pt
+/SKEMPI_v2
+/data/SKEMPI_v2
+/data/SKEMPI2
+/data/SKEMPI2/SKEMPI2.csv
+/data/SKEMPI2/PDBs
+/trained_models/DDAffinity.pt
+/trained_models/M1340.pt
+/data/M1707_cache
+/data/M1340_cache
