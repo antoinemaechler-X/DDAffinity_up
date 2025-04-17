@@ -1,0 +1,22 @@
+name: RDE
+channels:
+  - conda-forge
+  - pytorch
+  - bioconda
+  - defaults
+
+dependencies:
+  - python=3.10
+  - pytorch==1.12.1
+  - cudatoolkit=11.3
+  - pandas
+  - biopython
+  - scikit-learn
+  - python-lmdb
+  - joblib
+  - pyyaml
+  - easydict
+  - matplotlib
+  - tensorboard
+  - tqdm
+  - einops
