@@ -2,8 +2,8 @@
 #SBATCH --job-name=evoef1_skempi    # a short name for your job
 #SBATCH --output=evoef1_%j.out      # STDOUT → evoef1_<jobid>.out
 #SBATCH --error=evoef1_%j.err       # STDERR → evoef1_<jobid>.err
-#SBATCH --time=15:00:00             # Max walltime (HH:MM:SS)
-#SBATCH --cpus-per-task=2           # cores per task
+#SBATCH --time=48:00:00             # Max walltime (HH:MM:SS)
+#SBATCH --cpus-per-task=4           # cores per task
 #SBATCH --mem=8G                    # total RAM
 #SBATCH --partition=shared,sapphire,shakhnovich
 #SBATCH --nice=10000                # lower priority

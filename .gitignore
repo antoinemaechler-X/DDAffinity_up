@@ -137,11 +137,10 @@ dmypy.json
 /data/SKEMPI2/M1707_cache
 /data/SKEMPI2/PDBs
 /data/SKEMPI2/SKEMPI2_cache
-/data/SKEMPI2/SKEMPI2.csv
-/data/SKEMPI2/M1340.csv
+
 /data/SKEMPI2/M1707.csv
 /data/SKEMPI2/M1340_cache.zip
-/data/SKEMPI2/evoef1
+#/data/SKEMPI2/evoef1
 
 /data/SKEMPI2/foldxLinux64
 

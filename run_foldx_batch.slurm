@@ -2,13 +2,13 @@
 #SBATCH --job-name=foldx_skemp
 #SBATCH --output=foldx_%j.out
 #SBATCH --error=foldx_%j.err
-#SBATCH --time=24:00:00             # Max time (up to you)
-#SBATCH --cpus-per-task=2
+#SBATCH --time=48:00:00
+#SBATCH --cpus-per-task=4
 #SBATCH --mem=8G
 #SBATCH --partition=shared,sapphire,shakhnovich
 #SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=your_email@harvard.edu  # << set this!
-#SBATCH --nice=10000                # Lower priority, no rush
+#SBATCH --mail-user=antoinemaechler@fas.harvard.edu
+#SBATCH --nice=10000
 
 # Load your environment
 source /n/sw/Mambaforge-23.11.0-0/etc/profile.d/conda.sh
