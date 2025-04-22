@@ -13,13 +13,13 @@ from Bio.PDB import PDBParser
 
 
 def main():
-    subset = "SKEMPI2"
-    csv_path = os.path.join("..", "..", "data", subset, f"{subset}.csv")
+    subset = "M1340"
+    csv_path = os.path.join("..", "..", "data", "SKEMPI2", f"{subset}.csv")
     df = pd.read_csv(csv_path)
 
-    pdb_dir = os.path.abspath(os.path.join("..", "..", "data", subset, "PDBs"))
-    workdir = os.path.abspath(os.path.join("..", "..", "data", subset, f"{subset}_cache"))
-    evoef_bin = os.path.abspath(os.path.join("..", "..", "data", subset, "evoef1", "EvoEF"))
+    pdb_dir = os.path.abspath(os.path.join("..", "..", "data", "SKEMPI2", "PDBs"))
+    workdir = os.path.abspath(os.path.join("..", "..", "data", "SKEMPI2", f"{subset}_cache"))
+    evoef_bin = os.path.abspath(os.path.join("..", "..", "data", "SKEMPI2", "evoef1", "EvoEF"))
 
     wildtype_dir = os.path.join(workdir, "wildtype_evoef1")
     optimized_dir = os.path.join(workdir, "optimized_evoef1")

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=evoef1_skempi    # a short name for your job
+#SBATCH --job-name=evoef1_M1340    # a short name for your job
 #SBATCH --output=evoef1_%j.out      # STDOUT → evoef1_<jobid>.out
 #SBATCH --error=evoef1_%j.err       # STDERR → evoef1_<jobid>.err
 #SBATCH --time=48:00:00             # Max walltime (HH:MM:SS)
@@ -15,7 +15,10 @@ source /n/sw/Mambaforge-23.11.0-0/etc/profile.d/conda.sh
 conda activate RDE
 
 # === move into your working folder ===
-cd ~/DDAffinity/rde/datasets
+cd /n/netscratch/shakhnovich_lab/Lab/amaechler/DDAffinity_up
+
+#cd ~/DDAffinity/rde/datasets
+cd rde/datasets
 
 # === run the EvoEF1 generation script ===
 # note: make sure PDB_generate_evoef1.py is executable or call python explicitly

@@ -15,7 +15,10 @@ source /n/sw/Mambaforge-23.11.0-0/etc/profile.d/conda.sh
 conda activate RDE
 
 # Go to your project directory
-cd ~/DDAffinity/rde/datasets
+cd /n/netscratch/shakhnovich_lab/Lab/amaechler/DDAffinity_up
+
+#cd ~/DDAffinity/rde/datasets
+cd rde/datasets
 
 # Run your script
 python PDB_generate_new_version.py
