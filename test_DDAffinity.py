@@ -56,9 +56,9 @@ if __name__ == '__main__':
     ).to(args.device)
     cv_mgr.load_state_dict(ckpt['model'], )
         
-    print(config_model)
-
     config_model['data'] = config['data']
+
+    print(config_model)
 
     # Data
     dataset_mgr = SkempiDatasetManager(

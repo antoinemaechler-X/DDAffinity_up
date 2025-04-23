@@ -25,8 +25,8 @@ data:
   # pdb_mt_dir: ./data/SKEMPI2/SKEMPI2_cache/optimized
   # cache_dir: ./data/SKEMPI2/SKEMPI2_cache/entries_cache
   csv_path: ./data/SKEMPI2/M1340.csv
-  pdb_wt_dir: ./data/SKEMPI2/M1340_cache/wildtype_evoef1
-  pdb_mt_dir: ./data/SKEMPI2/MS1340_cache/optimized_evoef1
+  pdb_wt_dir: ./data/SKEMPI2/M1340_cache/wildtype
+  pdb_mt_dir: ./data/SKEMPI2/M1340_cache/wildtype
   cache_dir: ./data/SKEMPI2/M1340_cache/entries_cache
 #  csv_path: ./data/SKEMPI2/S1131.csv
 #  pdb_wt_dir: ./data/SKEMPI2/S1131_cache/wildtype
@@ -47,22 +47,22 @@ data:
 train:
   loss_weights:
     loss_mse: 1.0
-  max_epochs: &max_epochs 300   # 200
+  max_epochs: &max_epochs 200   # 300
   val_freq: 5
-  early_stopping_epoch: 250     # 150
+  early_stopping_epoch: 150     # 250
   batch_size: 32
 
   seed: 2024
   max_grad_norm: 100.0
   optimizer:
-#    type: adam
-#    lr: 6.e-4
-#    weight_decay: 0.0
-#    beta1: 0.9
-#    beta2: 0.999
-    type: warm_up
-    warmup: 8000
-    d_model: 128
-    step: 0
-    factor: 1
+    type: adam
+    lr: 6.e-4
+    weight_decay: 0.0
+    beta1: 0.9
+    beta2: 0.999
+    # type: warm_up
+    # warmup: 8000
+    # d_model: 128
+    # step: 0
+    # factor: 1
 

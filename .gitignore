@@ -152,3 +152,9 @@ important_data.zip
 
 /trained_models/DDAffinity.pt
 /trained_models/M1340.pt
+
+
+#training
+
+logs_skempi
+early_stopping
