@@ -56,9 +56,9 @@ def _compute_interface_score_for_mutation(cb_coords, keys, coords, mutation: str
     mut_cb = cb_coords[mut_key]
 
     dists = np.linalg.norm(coords - mut_cb, axis=1)
-    idx20 = np.argsort(dists)[:20]
+    idx20 = np.argsort(dists)[:9] #before 20
     weights = np.exp(- (dists[idx20]**2) / (2 * sigma_interface**2))
-
+    
     counts = []
     for i in idx20:
         d_all = np.linalg.norm(coords - coords[i], axis=1)
@@ -72,7 +72,7 @@ def _compute_interface_score_for_mutation(cb_coords, keys, coords, mutation: str
         return 0.0
     return float(np.dot(weights, counts) / weights.sum())
 
-def interface_score(pdb_path: str, mutation: str, sigma_interface: float = 1.0) -> float:
+def interface_score(pdb_path: str, mutation: str, sigma_interface: float = 2.5) -> float:
     """
     Compute **normalized** Gaussian‐weighted interface score for one mutation.
     """
@@ -93,7 +93,7 @@ def interface_score(pdb_path: str, mutation: str, sigma_interface: float = 1.0) 
                                                mutation, sigma_interface)
     return raw / max_raw
 
-def interface_scores(pdb_path: str, mutations: list, sigma_interface: float = 1.0) -> list:
+def interface_scores(pdb_path: str, mutations: list, sigma_interface: float = 2.5) -> list:
     """
     Compute normalized interface scores for multiple mutations.
     """
@@ -114,3 +114,5 @@ def interface_scores(pdb_path: str, mutations: list, sigma_interface: float = 1.
                                              mut, sigma_interface) / max_raw
         for mut in mutations
     ]
+
+#print(interface_scores("data/SKEMPI2/SKEMPI2_cache/wildtype/64_1IAR.pdb", ["RA88A", "EA9Q", "KA84D", "IA5A", "RA85A", "RA81A", "RA53Q", "TA13A", "WA91A"], 2.5))
