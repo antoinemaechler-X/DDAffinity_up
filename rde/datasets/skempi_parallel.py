@@ -85,7 +85,7 @@ def load_skempi_entries(csv_path, pdb_wt_dir, pdb_mt_dir, block_list={'1KBH'}):
 
         entry = {
             'id': i,
-            'complex': row['#Pdb'],
+            'complex': f"{row['#Pdb_origin']}_{row['Partner1']}_{row['Partner2']}",
             'mutstr': mut_str,
             'num_muts': len(muts),
             'pdbcode': str(i)+"_"+pdbcode,
@@ -226,7 +226,7 @@ class SkempiDataset_lmdb(Dataset):
         num_cvfolds=3, 
         split='train', 
         split_seed=2022,
-        num_preprocess_jobs=math.floor(cpu_count() * 0.6),
+        num_preprocess_jobs=None,  # Changed to None as default
         transform=None, 
         blocklist=frozenset({'1KBH'}), 
         reset=False,
@@ -246,7 +246,13 @@ class SkempiDataset_lmdb(Dataset):
         assert split in ('train', 'val')
         self.split = split
         self.split_seed = split_seed
-        self.num_preprocess_jobs = num_preprocess_jobs
+        
+        # Calculate num_preprocess_jobs if not provided
+        if num_preprocess_jobs is None:
+            num_cpus = cpu_count()
+            self.num_preprocess_jobs = max(1, math.floor(num_cpus * 0.6))  # Ensure at least 1 job
+        else:
+            self.num_preprocess_jobs = max(1, num_preprocess_jobs)  # Ensure at least 1 job
 
         self.entries_cache = os.path.join(cache_dir, 'entries.pkl')
         self.entries = None                 # 按训练集和测试集划分
@@ -319,8 +325,10 @@ class SkempiDataset_lmdb(Dataset):
 
     def _load_structures(self, reset):
         if not os.path.exists(self.structures_cache) or reset:
+            print(f"[INFO] Cache {'reset' if reset else 'not found'}, preprocessing structures...")
             self.structures = self._preprocess_structures(reset)
         else:
+            print(f"[INFO] Using existing cache at {self.structures_cache}")
             return None
             # with open(self.structures_cache, 'rb') as f:
             #     self.structures = pickle.load(f)

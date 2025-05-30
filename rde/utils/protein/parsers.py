@@ -65,38 +65,36 @@ def parse_mmcif_assembly(path, model_id, assembly_id=0, unknown_threshold=1.0):
 def parse_biopython_structure(entity, chains_ordered,  unknown_threshold=1.0):
     chains = Selection.unfold_entities(entity, 'C')
     # delete invalid chain
-    for i, chain in enumerate(chains):
-        if chain.id == " ":
-            del chains[i]
-    index_dict = {k: i for i, k in enumerate(chains_ordered)}
-    chains = sorted(chains, key=lambda x: index_dict[x])
+    chains = [c for c in chains if c.id != " "]
+    
+    # Create mapping from chain ID to index in ordered list
+    index_dict = {chain_id: i for i, chain_id in enumerate(chains_ordered)}
+    
+    # Sort chains by their chain IDs using the index mapping
+    chains = sorted(chains, key=lambda x: index_dict[x.id])
 
-    data_chains_dict = {}
-    tensor_types = {
-        'chain_nb': torch.LongTensor,
-        'resseq': torch.LongTensor,
-        'res_nb': torch.LongTensor,
-        'residue_idx': torch.LongTensor,
-        'aa': torch.LongTensor,
-        'pos_heavyatom': torch.stack,
-        'mask_heavyatom': torch.stack,
-        'pos_allatom': torch.stack,
-        'mask_allatom': torch.stack,
-
-        'phi': torch.FloatTensor,
-        'phi_mask': torch.BoolTensor,
-        'psi': torch.FloatTensor,
-        'psi_mask': torch.BoolTensor,
-
-        'chi': torch.stack,
-        'chi_alt': torch.stack,
-        'chi_mask': torch.stack,
-        'chi_complete': torch.BoolTensor,
-    }
+    # Initialize lists to store data from all chains
+    all_chain_nb = []
+    all_resseq = []
+    all_res_nb = []
+    all_residue_idx = []
+    all_aa = []
+    all_pos_heavyatom = []
+    all_mask_heavyatom = []
+    all_pos_allatom = []
+    all_mask_allatom = []
+    all_phi = []
+    all_phi_mask = []
+    all_psi = []
+    all_psi_mask = []
+    all_chi = []
+    all_chi_alt = []
+    all_chi_mask = []
+    all_chi_complete = []
 
     count_unk = 0
     c = 1
-    l0= 0
+    l0 = 0
     chain_id = 0
     for i, chain in enumerate(chains):
         if chain.get_id() == ' ':
@@ -128,7 +126,6 @@ def parse_biopython_structure(entity, chains_ordered,  unknown_threshold=1.0):
                 continue
 
             # Chain info
-            # data.chain_id.append(chain.get_id())
             data.chain_nb.append(chain_id)
 
             # Residue types
@@ -184,26 +181,52 @@ def parse_biopython_structure(entity, chains_ordered,  unknown_threshold=1.0):
         c += 1
         if len(data.aa) == 0:
             continue
-        else:
-            data_chains_dict[chain_id] = data
+
+        # Append data from this chain to the lists
+        all_chain_nb.extend(data.chain_nb)
+        all_resseq.extend(data.resseq)
+        all_res_nb.extend(data.res_nb)
+        all_residue_idx.extend(data.residue_idx)
+        all_aa.extend(data.aa)
+        all_pos_heavyatom.extend(data.pos_heavyatom)
+        all_mask_heavyatom.extend(data.mask_heavyatom)
+        all_pos_allatom.extend(data.pos_allatom)
+        all_mask_allatom.extend(data.mask_allatom)
+        all_phi.extend(data.phi)
+        all_phi_mask.extend(data.phi_mask)
+        all_psi.extend(data.psi)
+        all_psi_mask.extend(data.psi_mask)
+        all_chi.extend(data.chi)
+        all_chi_alt.extend(data.chi_alt)
+        all_chi_mask.extend(data.chi_mask)
+        all_chi_complete.extend(data.chi_complete)
         chain_id += 1
 
-    for _, data in data_chains_dict.items():
-        if len(data.aa) == 0:
-            return None, None
+    if len(all_aa) == 0:
+        return None, None
 
     if (count_unk / l0) >= unknown_threshold:
         return None, None
 
-    # seq_map = {}
-    # for i, (chain_id, resseq) in enumerate(zip(data.chain_id, data.resseq)):
-    #     seq_map[(chain_id, resseq)] = i
+    # Convert lists to tensors
+    data_dict = {
+        'chain_nb': torch.tensor(all_chain_nb, dtype=torch.long),
+        'resseq': torch.tensor(all_resseq, dtype=torch.long),
+        'res_nb': torch.tensor(all_res_nb, dtype=torch.long),
+        'residue_idx': torch.tensor(all_residue_idx, dtype=torch.long),
+        'aa': torch.tensor(all_aa, dtype=torch.long),
+        'pos_heavyatom': torch.stack(all_pos_heavyatom),
+        'mask_heavyatom': torch.stack(all_mask_heavyatom),
+        'pos_allatom': torch.stack(all_pos_allatom),
+        'mask_allatom': torch.stack(all_mask_allatom),
+        'phi': torch.tensor(all_phi, dtype=torch.float),
+        'phi_mask': torch.tensor(all_phi_mask, dtype=torch.bool),
+        'psi': torch.tensor(all_psi, dtype=torch.float),
+        'psi_mask': torch.tensor(all_psi_mask, dtype=torch.bool),
+        'chi': torch.stack(all_chi),
+        'chi_alt': torch.stack(all_chi_alt),
+        'chi_mask': torch.stack(all_chi_mask),
+        'chi_complete': torch.tensor(all_chi_complete, dtype=torch.bool)
+    }
 
-    for i, data in data_chains_dict.items():
-        for key, convert_fn in tensor_types.items():
-            data_chains_dict[i][key] = convert_fn(data[key])
-
-    # data_chains_dict["seq_len"] = l0
-
-    # return data, seq_map
-    return data_chains_dict, l0
+    return data_dict, l0

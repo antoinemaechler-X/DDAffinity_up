@@ -1,0 +1,49 @@
+checkpoint: ./trained_models/DDAffinity.pt
+early_stoppingdir: ./early_stopping_simple
+
+# Model parameters at top level since that's what the model code expects
+node_features: 128
+edge_features: 128
+hidden_dim: 128
+num_encoder_layers: 3
+num_decoder_layers: 3
+seq_neighbours: 3
+seq_nonneighbours: 7
+k_neighbors: 16
+dropout: 0.1
+augment_eps: 0.2
+patch_size: 256
+encoder:
+  node_feat_dim: 128
+  pair_feat_dim: 64
+  num_layers: 3
+
+data:
+  csv_path: ./data/SKEMPI2/SKEMPI2.csv
+  pdb_wt_dir: ./data/SKEMPI2/SKEMPI2_cache/wildtype
+  pdb_mt_dir: ./data/SKEMPI2/SKEMPI2_cache/optimized
+  cache_dir: ./data/SKEMPI2/SKEMPI2_cache/entries_cache
+  train: !include ../common/data_train_chain.yml
+  val: !include ../common/data_val_chain.yml
+  is_single: 2
+
+train:
+  loss_weights:
+    loss_mse: 1.0
+  max_epochs: 200
+  val_freq: 5
+  early_stopping:
+    patience: 150
+    delta: 0.001
+    verbose: true
+  batch_size: 32
+  seed: 2024
+  max_grad_norm: 100.0
+  lr: 6.e-4
+  weight_decay: 0.0
+  optimizer:
+    type: adam
+    lr: 6.e-4
+    weight_decay: 0.0
+    beta1: 0.9
+    beta2: 0.999 

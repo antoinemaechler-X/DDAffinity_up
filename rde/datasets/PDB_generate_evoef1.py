@@ -13,7 +13,7 @@ from Bio.PDB import PDBParser
 
 
 def main():
-    subset = "M1340"
+    subset = "SKEMPI2"
     csv_path = os.path.join("..", "..", "data", "SKEMPI2", f"{subset}.csv")
     df = pd.read_csv(csv_path)
 

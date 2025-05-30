@@ -45,12 +45,30 @@ class PaddingCollate(object):
         ], dim=0)
 
     @staticmethod
-    def _get_common_keys(list_of_dict):
-        keys = set(list_of_dict[0]["wt"].keys())
-        for d in list_of_dict[1:]:
+    def _filter_and_get_keys(data_list):
+        # Filter out samples missing centrality and collect keys
+        filtered_data = []
+        missing_centrality = []
+        
+        for data in data_list:
+            complex_id = data["wt"].get('complex', 'unknown')
+            if 'centrality' not in data["wt"]:
+                missing_centrality.append(complex_id)
+                continue
+            filtered_data.append(data)
+        
+        if missing_centrality:
+            print(f"Warning: Filtered out {len(missing_centrality)} samples missing centrality: {missing_centrality}")
+        
+        if not filtered_data:
+            raise ValueError("No samples with centrality found in batch!")
+        
+        # Get intersection of keys from filtered data
+        keys = set(filtered_data[0]["wt"].keys())
+        for d in filtered_data[1:]:
             keys = keys.intersection(d["wt"].keys())
-        return keys
-
+        
+        return filtered_data, keys
 
     def _get_pad_value(self, key):
         if key not in self.pad_values:
@@ -58,17 +76,21 @@ class PaddingCollate(object):
         return self.pad_values[key]
 
     def __call__(self, data_list):
-        max_length = max([data["wt"][self.length_ref_key].size(0) for data in data_list])
+        # Filter out samples missing centrality and get common keys
+        filtered_data, keys = self._filter_and_get_keys(data_list)
+        
+        if len(filtered_data) == 0:
+            raise ValueError("No valid samples in batch after filtering!")
+        
+        max_length = max([data["wt"][self.length_ref_key].size(0) for data in filtered_data])
         if max_length < self.patch_size:
             max_length = self.patch_size
-
-        keys = self._get_common_keys(data_list)
         
         if self.eight:
             max_length = math.ceil(max_length / 8) * 8
 
         data_list_padded = []
-        for data in data_list:
+        for data in filtered_data:
             data_dict = {}
             for flag in ["wt", "mt"]:
                 data_padded = {
@@ -82,7 +104,7 @@ class PaddingCollate(object):
 
         batch = default_collate(data_list_padded)
         batch['size'] = len(data_list_padded)
-        ddG = torch.tensor([data["wt"]["ddG"] for data in data_list],dtype=torch.float32).unsqueeze(-1)
+        ddG = torch.tensor([data["wt"]["ddG"] for data in filtered_data], dtype=torch.float32).unsqueeze(-1)
         batch['ddG'] = ddG
 
         return batch
