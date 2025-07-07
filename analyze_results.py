@@ -185,6 +185,35 @@ def analyze_results(csv_path, by_method=False):
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         print(f"\nScatter plot saved to: {plot_path}")
 
+        # --- Third graph: Simple scatter plot with correlation box ---
+        plt.figure(figsize=(8, 6))
+        
+        # Simple scatter plot with all points (no method distinction)
+        plt.scatter(df_unique['ddG'], df_unique['ddG_pred'], alpha=0.6)
+        
+        # Add diagonal line
+        min_val = min(df_unique['ddG'].min(), df_unique['ddG_pred'].min())
+        max_val = max(df_unique['ddG'].max(), df_unique['ddG_pred'].max())
+        plt.plot([min_val, max_val], [min_val, max_val], 'r--', alpha=0.8)
+        
+        plt.xlabel('True ddG (kcal/mol)')
+        plt.ylabel('Predicted ddG (kcal/mol)')
+        plt.title(f'Prediction vs True ddG\nPearson r = {pearson_corr:.4f}, Spearman ρ = {spearman_corr:.4f}')
+        plt.grid(True, alpha=0.3)
+        
+        # Add correlation coefficients text box
+        plt.text(0.05, 0.95, f'Pearson r = {pearson_corr:.4f}\nSpearman ρ = {spearman_corr:.4f}', 
+                transform=plt.gca().transAxes, fontsize=12,
+                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+        
+        plt.tight_layout()
+        
+        # Save third plot
+        simple_plot_path = csv_path.replace('.csv', '_simple_correlation.png')
+        plt.savefig(simple_plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        print(f"\nSimple correlation plot saved to: {simple_plot_path}")
+
         # --- Compute global Pearson/Spearman for methods with n >= 200 ---
         # Find methods with at least 200 entries
         method_counts = df['Method'].value_counts()
@@ -218,5 +247,5 @@ def analyze_results(csv_path, by_method=False):
 
 if __name__ == "__main__":
     # Analyze the results file
-    csv_path = "logs_skempi/[10-fold-16]_05_27_16_17_35/checkpoints/results_75.csv"
+    csv_path = "logs_skempi_grouped/[grouped-10fold]_07_01_12_13_25/checkpoints/results_75.csv"
     analyze_results(csv_path, by_method=True)  # Set to True to analyze by method 

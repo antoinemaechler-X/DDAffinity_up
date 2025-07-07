@@ -12,8 +12,8 @@ mt_codes = {k.split('_',1)[1] for k in keys if k.startswith('mt_')}
 valid_codes = wt_codes & mt_codes
 
 # load your SPR‐only CSV and filter
-spr_csv   = 'data/SKEMPI2/SKEMPI2_SPR.csv'
-clean_csv = 'data/SKEMPI2/SKEMPI2_SPR_clean.csv'
+spr_csv   = 'data/SKEMPI2/SKEMPI2_SPR_exclusive.csv'
+clean_csv = 'data/SKEMPI2/SKEMPI2_SPR_exclusive_clean.csv'
 df = pd.read_csv(spr_csv, dtype=str)
 df_clean = df[df['#Pdb'].isin(valid_codes)].copy()
 df_clean.to_csv(clean_csv, index=False)

@@ -45,7 +45,8 @@ if __name__ == '__main__':
     config, _ = load_config(args.config)
 
     # Model
-    ckpt = torch.load(config.checkpoint, map_location=args.device, weights_only=False)
+    #ckpt = torch.load(config.checkpoint, map_location=args.device, weights_only=False)
+    ckpt = torch.load(config.checkpoint, map_location=args.device)
     config_model = ckpt['config']
     num_cvfolds = len(ckpt['model']['models'])
     cv_mgr = CrossValidation(

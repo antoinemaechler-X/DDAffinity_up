@@ -20,7 +20,7 @@ model:
   patch_size: 256
 
 data:
-  csv_path: ./data/SKEMPI2/SKEMPI2_SPR_clean.csv
+  csv_path: ./data/SKEMPI2/SKEMPI2_SPR_exclusive_clean.csv
   pdb_wt_dir: ./data/SKEMPI2/SKEMPI2_cache/wildtype
   pdb_mt_dir: ./data/SKEMPI2/SKEMPI2_cache/optimized
   cache_dir: ./data/SKEMPI2/SKEMPI2_cache_spr/entries_cache

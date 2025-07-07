@@ -8,6 +8,7 @@ from tqdm import tqdm
 from burial_score import burial_score, burial_scores
 from interface_score import interface_score, interface_scores
 from shift_score import combined_shift_score, combined_shift_scores
+from flexibility_score import flexibility_score, flexibility_scores
 
 def main():
     parser = argparse.ArgumentParser(
@@ -26,6 +27,10 @@ def main():
     parser.add_argument("-s", "--sigma-interface", type=float,
                         dest="sigma_interface", default=2.5,
                         help="σ for interface Gaussian (default: 2.5)")
+    parser.add_argument("--sigma-flexibility", type=float, default=2.5,
+                        help="σ for flexibility Gaussian (default: 2.5)")
+    parser.add_argument("--no-flexibility", action="store_true", default=False,
+                        help="Skip flexibility score calculation (faster)")
     parser.add_argument("--w_dihedral_shift", type=float, default=1.0,
                         help="Weight for dihedral component in shift score")
     parser.add_argument("--w_contact_shift", type=float, default=2.0,
@@ -68,6 +73,7 @@ def main():
     burial_list     = []
     interface_list  = []
     shift_list      = []
+    flexibility_list = []
     labels          = []
     lengths         = []
 
@@ -111,10 +117,20 @@ def main():
                 except Exception as e:
                     print(f"[Warn] shift row {idx}, mut {mut}: {e}")
                     s = float('nan')
+                
+                if not args.no_flexibility:
+                    try:
+                        f = flexibility_score(wt_pdb, mut, sigma=args.sigma_flexibility)
+                    except Exception as e:
+                        print(f"[Warn] flexibility row {idx}, mut {mut}: {e}")
+                        f = float('nan')
+                else:
+                    f = float('nan')
 
                 burial_list.append(b)
                 interface_list.append(i)
                 shift_list.append(s)
+                flexibility_list.append(f)
                 ddG_list.append(ddg_val)
                 labels.append(mut)
                 lengths.append(n_muts)
@@ -128,25 +144,48 @@ def main():
                     w_dihedral=args.w_dihedral_shift,
                     w_contact=args.w_contact_shift
                 )
-                if args.mode == 'mean':
-                    b = sum(b_scores) / len(b_scores)
-                    i = sum(i_scores) / len(i_scores)
-                    s = sum(s_scores) / len(s_scores)
-                elif args.mode == 'sum':
-                    b = sum(b_scores)
-                    i = sum(i_scores)
-                    s = sum(s_scores)
-                else:  # max
-                    b = max(b_scores)
-                    i = max(i_scores)
-                    s = max(s_scores)
+                
+                if not args.no_flexibility:
+                    f_scores = flexibility_scores(wt_pdb, muts, sigma=args.sigma_flexibility)
+                    if args.mode == 'mean':
+                        b = sum(b_scores) / len(b_scores)
+                        i = sum(i_scores) / len(i_scores)
+                        s = sum(s_scores) / len(s_scores)
+                        f = sum(f_scores) / len(f_scores)
+                    elif args.mode == 'sum':
+                        b = sum(b_scores)
+                        i = sum(i_scores)
+                        s = sum(s_scores)
+                        f = sum(f_scores)
+                    else:  # max
+                        b = max(b_scores)
+                        i = max(i_scores)
+                        s = max(s_scores)
+                        f = max(f_scores)
+                else:
+                    if args.mode == 'mean':
+                        b = sum(b_scores) / len(b_scores)
+                        i = sum(i_scores) / len(i_scores)
+                        s = sum(s_scores) / len(s_scores)
+                        f = float('nan')
+                    elif args.mode == 'sum':
+                        b = sum(b_scores)
+                        i = sum(i_scores)
+                        s = sum(s_scores)
+                        f = float('nan')
+                    else:  # max
+                        b = max(b_scores)
+                        i = max(i_scores)
+                        s = max(s_scores)
+                        f = float('nan')
             except Exception as e:
                 print(f"[Warn] row {idx} aggregate: {e}")
-                b, i, s = float('nan'), float('nan'), float('nan')
+                b, i, s, f = float('nan'), float('nan'), float('nan'), float('nan')
 
             burial_list.append(b)
             interface_list.append(i)
             shift_list.append(s)
+            flexibility_list.append(f)
             ddG_list.append(ddg_val)
             labels.append(";".join(muts))
             lengths.append(n_muts)
@@ -200,6 +239,19 @@ def main():
         (f'ddG_vs_shift_{args.protein}_{args.mode}_'
          f'wD{args.w_dihedral_shift}_wC{args.w_contact_shift}.png')
     )
+    
+    if not args.no_flexibility:
+        make_scatter(
+            flexibility_list, ddG_list, labels, lengths,
+            'Flexibility Score', 'Absolute ddG',
+            f'ddG vs Flexibility ({mode_label}, σ={args.sigma_flexibility})',
+            f'ddG_vs_flexibility_{args.protein}_{args.mode}_s{args.sigma_flexibility}.png'
+        )
+    
+    # Clear flexibility caches to free memory
+    if not args.no_flexibility:
+        from flexibility_score import clear_caches
+        clear_caches()
 
 if __name__ == '__main__':
     main()
