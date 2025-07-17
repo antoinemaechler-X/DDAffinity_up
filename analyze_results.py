@@ -247,5 +247,5 @@ def analyze_results(csv_path, by_method=False):
 
 if __name__ == "__main__":
     # Analyze the results file
-    csv_path = "logs_skempi_grouped/[grouped-10fold]_07_01_12_13_25/checkpoints/results_75.csv"
+    csv_path = "logs_skempi/[10-fold-16]_05_27_16_17_35/checkpoints/results_75.csv"
     analyze_results(csv_path, by_method=True)  # Set to True to analyze by method 

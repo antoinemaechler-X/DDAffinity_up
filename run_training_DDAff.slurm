@@ -22,7 +22,7 @@ cd /n/netscratch/shakhnovich_lab/Lab/amaechler/DDAffinity_up
 #pip install numpy==1.24.3 --no-deps
 
 # === run the training script ===
-python train_DDAffinity_grouped.py ./configs/train/mpnn_ddg.yml --num_cvfolds 10 --device cuda:0 --split data/complex_sequences_grouped_40.csv
+python train_DDAffinity_grouped.py ./configs/train/mpnn_ddg.yml --num_cvfolds 10 --device cuda:0 --split data/complex_sequences_grouped_80.csv
 #python scripts/train_spr.py   configs/train/mpnn_ddg_spr.yml   --num_cvfolds 10   --logdir ./logs_skempi_spr   --early_stoppingdir ./early_stopping_spr   --device cuda:0
 #python train_DDAffinity.py ./configs/train/mpnn_ddg.yml --num_cvfolds 10 --logdir ./logs_skempi --early_stoppingdir ./early_stopping --device cuda:0
 # === end of script ===
